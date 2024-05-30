@@ -1,0 +1,50 @@
+{
+	"name": "Agency_master",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "agencymaster",
+						"type": "DatasetReference"
+					},
+					"name": "loadagencymaster"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "payroll_agency",
+						"type": "DatasetReference"
+					},
+					"name": "sinkdbagency"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          AgencyID as string,",
+				"          AgencyName as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> loadagencymaster",
+				"loadagencymaster sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          AgencyID as string,",
+				"          AgencyName as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkdbagency"
+			]
+		}
+	}
+}

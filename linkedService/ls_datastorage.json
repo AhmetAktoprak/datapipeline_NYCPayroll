@@ -1,0 +1,12 @@
+{
+	"name": "ls_datastorage",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://storage4udacity.dfs.core.windows.net/",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQERBOERFRTg4LURBQTMtNDExOS1CRENCLTZEMEIwNTkyNjA0OV9hZTE2ZjFhZi04MDg0LTQ1ZTYtOTQ3OC0xMjAxMDM4ZmE1NGQiDQp9"
+		}
+	}
+}
