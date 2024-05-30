@@ -1,0 +1,266 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "udacitydatafactory"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dataflow_agency",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Agency_master",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"loadagencymaster": {},
+									"sinkdbagency": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "dataflow_emp",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Emp_master",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"empmaster": {},
+									"sinkdbpayrollemp": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "dataflow_title",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Title_master",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"titlemaster": {},
+									"sinkdbtitle": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "dataflow_payroll2020",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "dataflow_agency",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "dataflow_emp",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "dataflow_title",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Payroll_2020",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"loadpayroll2020": {},
+									"sinkdbpayroll2020": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "dataflow_payroll2021",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "dataflow_agency",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "dataflow_emp",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "dataflow_title",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Payroll_2021",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"loadpayroll2021": {},
+									"sinkdbpayroll2021": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "dataflow_summary",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "dataflow_payroll2020",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "dataflow_payroll2021",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow_summary",
+								"type": "DataFlowReference",
+								"parameters": {
+									"dataflow_param_fiscalyear": "2020"
+								},
+								"datasetParameters": {
+									"payroll2020": {},
+									"payroll2021": {},
+									"sinktoPayrollsummary": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-05-30T16:10:21Z"
+			},
+			"dependsOn": []
+		}
+	]
+}
